@@ -1,11 +1,21 @@
-import React, {useContext} from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
-import { Provider as AuthProvider, Context as AuthContext } from './src/context/AuthContext'
-import LoginForm from './src/components/LoginForm'
-
+import React, {useContext, useEffect, useState} from 'react'
+import {StyleSheet, Text, View} from 'react-native'
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context'
+import {Provider as AuthProvider, Context as AuthContext} from './src/context/AuthContext'
+import LoginScreen from './src/screens/LoginScreen'
+import inopack from './src/api/inopack'
 
 const MainFlow = () => {
+
+
+  useEffect(() => {
+    const getEquipments = async () => {
+      const response = await inopack.get('equipment/list')
+      console.log(response)
+    }
+    getEquipments()
+  }, [])
+
   return (
     <SafeAreaView>
       <Text>
@@ -16,18 +26,20 @@ const MainFlow = () => {
 }
 
 const LoginFlow = () => {
+
   return (
-    <SafeAreaView>
-      <LoginForm />
+    <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
+      <LoginScreen />
     </SafeAreaView>
   )
 }
 
 const AuthFlow = () => {
-  const {state} = useContext(AuthContext)
+  const [tryLogin, setTryLogin] = useState(false)
+  const {token} = useContext(AuthContext)
 
   return (
-    state ? <MainFlow /> : <LoginFlow />
+    token ? <MainFlow /> : <LoginFlow />
   )
 }
 
@@ -40,12 +52,3 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
