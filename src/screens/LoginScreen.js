@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react'
-import { Input, Button, CheckBox } from 'react-native-elements'
+import {Input, Button, CheckBox, Text} from 'react-native-elements'
 import { View } from 'react-native'
 import Spacer from '../components/Spacer'
 import { FontAwesome5 } from '@expo/vector-icons'
@@ -37,6 +37,11 @@ const LoginScreen = ({onSubmit}) => {
 
   return (
     <View>
+      <Spacer>
+        <Text h4>
+          Titulo de prueba
+        </Text>
+      </Spacer>
       <Spacer>
         <Input
           label="E-mail"
