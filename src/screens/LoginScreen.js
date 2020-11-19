@@ -7,8 +7,8 @@ import {Context as AuthContext} from '../context/AuthContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const LoginScreen = ({onSubmit}) => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('mauricioaznar94@gmail.com')
+  const [password, setPassword] = useState('maurisio610261')
   const [remember, setRemember] = useState(true)
   const {login} = useContext(AuthContext)
 

@@ -2,28 +2,29 @@ import React, {useContext, useEffect, useState} from 'react'
 import {StyleSheet, Text, View} from 'react-native'
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context'
 import {Provider as AuthProvider, Context as AuthContext} from './src/context/AuthContext'
+import { NavigationContainer } from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
+
 import LoginScreen from './src/screens/LoginScreen'
 import inopack from './src/api/inopack'
 import TryLoginScreen from './src/screens/TryLoginScreen'
+import EquipmentInventoryScreen from './src/screens/EquipmentInventoryScreen'
+import EquipmentRequestsScreen from './src/screens/EquipmentRequestsScreen'
+import EquipmentWithdrawalScreen from './src/screens/EquipmentWithdrawalScreen'
+
+const EquipmentTabs = createBottomTabNavigator()
 
 const MainFlow = () => {
 
-
-  useEffect(() => {
-    const getEquipments = async () => {
-      const response = await inopack.get('equipment/list')
-    }
-    getEquipments()
-  }, [])
-
   return (
-    <SafeAreaView>
-      <Text>
-        Main Flow
-      </Text>
-    </SafeAreaView>
+    <EquipmentTabs.Navigator>
+      <EquipmentTabs.Screen name="Inventario" component={EquipmentInventoryScreen}/>
+      <EquipmentTabs.Screen name="Pedidos" component={EquipmentRequestsScreen}/>
+      <EquipmentTabs.Screen name="Retiros" component={EquipmentWithdrawalScreen}/>
+    </EquipmentTabs.Navigator>
   )
 }
+
 
 const LoginFlow = () => {
 
@@ -35,9 +36,9 @@ const LoginFlow = () => {
 }
 
 const AuthFlow = () => {
+
   const {token, firstTry} = useContext(AuthContext)
-  console.log(token)
-  console.log(firstTry)
+
   return (
     !firstTry ? <TryLoginScreen /> :
       !token ? <LoginFlow /> : <MainFlow />
@@ -47,9 +48,11 @@ const AuthFlow = () => {
 export default function App() {
   return (
     <SafeAreaProvider>
-      <AuthProvider>
-        <AuthFlow />
-      </AuthProvider>
+      <NavigationContainer>
+        <AuthProvider>
+          <AuthFlow />
+        </AuthProvider>
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }
