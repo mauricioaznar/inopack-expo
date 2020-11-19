@@ -14,8 +14,8 @@ const LoginScreen = ({onSubmit}) => {
 
   useEffect(() => {
     const setInitialValues = async () => {
-      const email = await AsyncStorage.getItem('email')
-      const password = await AsyncStorage.getItem('password')
+      const email = await AsyncStorage.getItem('')
+      const password = await AsyncStorage.getItem('')
       if (email && password) {
         setEmail(email)
         setPassword(password)
