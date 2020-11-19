@@ -1,9 +1,41 @@
-import React from 'react'
-import {ActivityIndicator} from 'react-native'
-import {SafeAreaView} from 'react-native-safe-area-context'
+import React, { useContext, useEffect } from 'react'
+import { ActivityIndicator } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { Context as AuthContext } from '../context/AuthContext'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
 
 export default () => {
-  return <SafeAreaView style={{flex: 1}}>
+  const { login, initialTry } = useContext(AuthContext)
+
+  useEffect(() => {
+
+    const callback = async (isSuccess) => {
+      if (!isSuccess) {
+        await AsyncStorage.removeItem('email')
+        await AsyncStorage.removeItem('password')
+      }
+    }
+
+    const tryLogin = async () => {
+      try {
+        const email = await AsyncStorage.getItem('email')
+        const password = await AsyncStorage.getItem('password')
+        if (email, password) {
+          console.log('gets called')
+          console.log(email)
+          console.log(password)
+          await login(email, password, callback)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+      initialTry()
+    }
+    tryLogin()
+  }, [])
+
+  return <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
     <ActivityIndicator size="large" color="#0000ff"/>
   </SafeAreaView>
 }

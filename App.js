@@ -4,6 +4,7 @@ import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context'
 import {Provider as AuthProvider, Context as AuthContext} from './src/context/AuthContext'
 import LoginScreen from './src/screens/LoginScreen'
 import inopack from './src/api/inopack'
+import TryLoginScreen from './src/screens/TryLoginScreen'
 
 const MainFlow = () => {
 
@@ -11,7 +12,6 @@ const MainFlow = () => {
   useEffect(() => {
     const getEquipments = async () => {
       const response = await inopack.get('equipment/list')
-      console.log(response)
     }
     getEquipments()
   }, [])
@@ -35,11 +35,12 @@ const LoginFlow = () => {
 }
 
 const AuthFlow = () => {
-  const [tryLogin, setTryLogin] = useState(false)
-  const {token} = useContext(AuthContext)
-
+  const {token, firstTry} = useContext(AuthContext)
+  console.log(token)
+  console.log(firstTry)
   return (
-    token ? <MainFlow /> : <LoginFlow />
+    !firstTry ? <TryLoginScreen /> :
+      !token ? <LoginFlow /> : <MainFlow />
   )
 }
 
