@@ -7,15 +7,15 @@ import {Context as AuthContext} from '../context/AuthContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const LoginScreen = ({onSubmit}) => {
-  const [email, setEmail] = useState('mauricioaznar94@gmail.com')
-  const [password, setPassword] = useState('maurisio610261')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(true)
   const {login} = useContext(AuthContext)
 
   useEffect(() => {
     const setInitialValues = async () => {
-      const email = await AsyncStorage.getItem('')
-      const password = await AsyncStorage.getItem('')
+      const email = await AsyncStorage.getItem('email')
+      const password = await AsyncStorage.getItem('password')
       if (email && password) {
         setEmail(email)
         setPassword(password)
