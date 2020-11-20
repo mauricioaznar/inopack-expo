@@ -6,9 +6,13 @@ import { FontAwesome5 } from '@expo/vector-icons'
 import {Context as AuthContext} from '../context/AuthContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
+
+
 const LoginScreen = ({onSubmit}) => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState(
+    __DEV__ ? 'mauricioaznar94@gmail.com' : '')
+  const [password, setPassword] = useState(
+    __DEV__ ? 'maurisio610261' : '')
   const [remember, setRemember] = useState(true)
   const {login} = useContext(AuthContext)
 

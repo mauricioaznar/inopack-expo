@@ -16,7 +16,9 @@ const EquipmentInventoryScreen = (props) => {
         ...eS,
         data: eS.data
           .filter(eq => {
-            return searchedText !== '' && eq.equipment_description ? eq.equipment_description.includes(searchedText) : true
+            return searchedText !== '' && eq.equipment_description && eq.equipment_subcategory_name ?
+              eq.equipment_description.includes(searchedText) || eq.equipment_subcategory_name.includes(searchedText)
+              : true
           })
       }
     })
