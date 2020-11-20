@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react'
-import {Text, FlatList, StyleSheet, SectionList} from 'react-native'
+import {Text, FlatList, StyleSheet, SectionList, View} from 'react-native'
 import {useFocusEffect} from '@react-navigation/native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import inopack from '../api/inopack'
@@ -78,6 +78,16 @@ const EquipmentInventoryScreen = (props) => {
         platform={'android'}
         value={searchedText}
         onChangeText={setSearchedText}
+        containerStyle={{
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 1,
+          },
+          shadowOpacity: 0.20,
+          shadowRadius: 1.41,
+          elevation: 2,
+        }}
       />
       <SectionList
         sections={filteredSections}

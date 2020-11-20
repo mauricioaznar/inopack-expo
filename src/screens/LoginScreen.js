@@ -42,11 +42,6 @@ const LoginScreen = ({onSubmit}) => {
   return (
     <View>
       <Spacer>
-        <Text h4>
-          Titulo de prueba
-        </Text>
-      </Spacer>
-      <Spacer>
         <Input
           label="E-mail"
           leftIcon={() => {

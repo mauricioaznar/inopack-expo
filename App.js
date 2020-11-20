@@ -15,34 +15,51 @@ import TryLoginScreen from './src/screens/TryLoginScreen'
 import EquipmentInventoryScreen from './src/screens/EquipmentInventoryScreen'
 import EquipmentRequestsScreen from './src/screens/EquipmentRequestsScreen'
 import EquipmentWithdrawalScreen from './src/screens/EquipmentWithdrawalScreen'
+import {Badge, Icon} from 'react-native-elements'
 
 const EquipmentTabs = createBottomTabNavigator()
 
 const MainFlow = () => {
 
   return (
-    <EquipmentTabs.Navigator>
+    <EquipmentTabs.Navigator
+      initialRouteName="EquipmentRequests"
+    >
       <EquipmentTabs.Screen
-        name="Inventario"
+        name="EquipmentInventory"
         component={EquipmentInventoryScreen}
         options={{
+          title: "Inventario",
           tabBarIcon: ({color, size}) => {
-            return (<MaterialIcons name="storage" size={size} color={color} />)
-          }
+            return (<Icon type="material" name="storage" size={size} color={color} />)
+          },
         }}
       />
       <EquipmentTabs.Screen
-        name="Pedidos"
+        name="EquipmentRequests"
         component={EquipmentRequestsScreen}
         options={{
+          title: "Pedidos",
           tabBarIcon: ({color, size}) => {
-            return (<FontAwesome5 name="shopping-bag" size={size} color={color} />)
+            return (
+              <View>
+                <Icon type="font-awesome-5" name="shopping-bag" size={size} color={color} />
+                <Badge
+                  status="error"
+                  value={2}
+                  containerStyle={{ position: 'absolute', top: -3, right: -7 }}
+                />
+              </View>
+              )
           }
         }}
       />
       <EquipmentTabs.Screen
-        name="Retiros"
+        name="EquipmentWithdrawals"
         component={EquipmentWithdrawalScreen}
+        options={{
+          title: "Retiros"
+        }}
       />
     </EquipmentTabs.Navigator>
   )
