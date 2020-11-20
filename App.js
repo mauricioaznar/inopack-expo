@@ -12,9 +12,9 @@ import {MaterialIcons, FontAwesome5} from '@expo/vector-icons'
 
 import LoginScreen from './src/screens/LoginScreen'
 import TryLoginScreen from './src/screens/TryLoginScreen'
-import EquipmentInventoryScreen from './src/screens/EquipmentInventoryScreen'
-import EquipmentRequestsScreen from './src/screens/EquipmentRequestsScreen'
-import EquipmentWithdrawalScreen from './src/screens/EquipmentWithdrawalScreen'
+import EquipmentInventoryScreen from './src/screens/equipmentRequests/EquipmentInventoryScreen'
+import EquipmentRequestsScreen from './src/screens/equipmentRequests/EquipmentRequestsScreen'
+import EquipmentWithdrawalScreen from './src/screens/equipmentRequests/EquipmentWithdrawalScreen'
 import {Badge, Icon} from 'react-native-elements'
 
 const EquipmentTabs = createBottomTabNavigator()

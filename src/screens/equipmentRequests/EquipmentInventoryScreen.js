@@ -2,9 +2,9 @@ import React, {useCallback, useState} from 'react'
 import {Text, FlatList, StyleSheet, SectionList, View} from 'react-native'
 import {useFocusEffect} from '@react-navigation/native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import inopack from '../api/inopack'
+import inopack from '../../api/inopack'
 import {SearchBar, ListItem, Badge} from 'react-native-elements'
-import Spacer from '../components/Spacer'
+import Spacer from '../../components/Spacer'
 
 const EquipmentInventoryScreen = (props) => {
   const [equipmentSections, setEquipmentSections] = useState([])
