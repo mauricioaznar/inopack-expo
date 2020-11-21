@@ -56,11 +56,15 @@ const EquipmentRequestsListScreen = ({navigation}) => {
                   {item.subtitle}
                 </ListItem.Subtitle>
               </ListItem.Content>
-              <Badge status={
-                item.equipment_transaction_status_id === 1 ? 'error'
-                  : item.equipment_transaction_status_id === 2 ? 'success'
-                  : 'primary'
-              } />
+              <Badge
+                status={
+                  item.equipment_transaction_status_id === 1 ? 'error'
+                    : item.equipment_transaction_status_id === 2 ? 'success'
+                    : 'primary'
+                }
+                size="large"
+                value={" "}
+              />
             </ListItem>
           )
         }}

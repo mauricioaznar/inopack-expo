@@ -16,52 +16,58 @@ import EquipmentInventoryScreen from './src/screens/equipmentRequests/EquipmentI
 import EquipmentRequestsScreen from './src/screens/equipmentRequests/EquipmentRequestsScreen'
 import EquipmentWithdrawalScreen from './src/screens/equipmentRequests/EquipmentWithdrawalScreen'
 import {Badge, Icon} from 'react-native-elements'
+import {Provider as EquipmentProvider, Context as EquipmentContext} from './src/context/EquipmentContext'
 
 const EquipmentTabs = createBottomTabNavigator()
 
 const MainFlow = () => {
+  const {cart} = useContext(EquipmentContext)
 
   return (
-    <EquipmentTabs.Navigator
-      initialRouteName="EquipmentRequests"
-    >
-      <EquipmentTabs.Screen
-        name="EquipmentInventory"
-        component={EquipmentInventoryScreen}
-        options={{
-          title: "Inventario",
-          tabBarIcon: ({color, size}) => {
-            return (<Icon type="material" name="storage" size={size} color={color} />)
-          },
-        }}
-      />
-      <EquipmentTabs.Screen
-        name="EquipmentRequests"
-        component={EquipmentRequestsScreen}
-        options={{
-          title: "Pedidos",
-          tabBarIcon: ({color, size}) => {
-            return (
-              <View>
-                <Icon type="font-awesome-5" name="shopping-bag" size={size} color={color} />
-                <Badge
-                  status="error"
-                  value={2}
-                  containerStyle={{ position: 'absolute', top: -3, right: -7 }}
-                />
-              </View>
+      <EquipmentTabs.Navigator
+        initialRouteName="EquipmentRequests"
+      >
+        <EquipmentTabs.Screen
+          name="EquipmentInventory"
+          component={EquipmentInventoryScreen}
+          options={{
+            title: "Inventario",
+            tabBarIcon: ({color, size}) => {
+              return (<Icon type="material" name="storage" size={size} color={color} />)
+            },
+          }}
+        />
+        <EquipmentTabs.Screen
+          name="EquipmentRequests"
+          component={EquipmentRequestsScreen}
+          options={{
+            title: "Pedidos",
+            tabBarIcon: ({color, size}) => {
+              return (
+                <View>
+                  <Icon type="font-awesome-5" name="shopping-bag" size={size} color={color} />
+                  {
+                    cart.length > 0
+                      ? <Badge
+                          status="error"
+                          value={cart.length}
+                          containerStyle={{ position: 'absolute', top: -3, right: -7 }}
+                        />
+                      : null
+                  }
+                </View>
               )
-          }
-        }}
-      />
-      <EquipmentTabs.Screen
-        name="EquipmentWithdrawals"
-        component={EquipmentWithdrawalScreen}
-        options={{
-          title: "Retiros"
-        }}
-      />
-    </EquipmentTabs.Navigator>
+            }
+          }}
+        />
+        <EquipmentTabs.Screen
+          name="EquipmentWithdrawals"
+          component={EquipmentWithdrawalScreen}
+          options={{
+            title: "Retiros"
+          }}
+        />
+      </EquipmentTabs.Navigator>
   )
 }
 
@@ -81,7 +87,10 @@ const AuthFlow = () => {
 
   return (
     !firstTry ? <TryLoginScreen/> :
-      !token ? <LoginFlow/> : <MainFlow/>
+      !token ? <LoginFlow/> :
+        <EquipmentProvider>
+          <MainFlow/>
+        </EquipmentProvider>
   )
 }
 

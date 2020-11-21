@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Button, View } from "react-native";
+import { View } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {Icon, Input} from 'react-native-elements'
-import Spacer from '../components/Spacer'
+import moment from 'moment'
 
-const DatePicker = ({onChangeText}) => {
-  const input = React.createRef();
+const DatePicker = ({onChangeDate, label = ''}) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [inputDate, setInputDate] = useState(null)
 
@@ -18,30 +17,30 @@ const DatePicker = ({onChangeText}) => {
   };
 
   const handleConfirm = (date) => {
-    setInputDate(String('2020-02-20'))
-    if (onChangeText) {
-      onChangeText(date)
+    const formattedDate = moment(date).format('YYYY-MM-DD')
+    setInputDate(formattedDate)
+    if (onChangeDate) {
+      onChangeDate(formattedDate)
     }
     hideDatePicker()
   };
 
   return (
     <View>
-      <Spacer>
-        <Input
-          disabled
-          value={inputDate}
-          rightIcon={() => {
-            return <Icon
-              onPress={() => {
-                showDatePicker()
-              }}
-              name="calendar"
-              type="font-awesome-5"
-            />
-          }}
-        />
-      </Spacer>
+      <Input
+        disabled
+        label={label}
+        value={inputDate}
+        rightIcon={() => {
+          return <Icon
+            onPress={() => {
+              showDatePicker()
+            }}
+            name="calendar"
+            type="font-awesome-5"
+          />
+        }}
+      />
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="date"
