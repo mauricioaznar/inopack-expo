@@ -7,7 +7,7 @@ const equipmentReducer = (state, action) => {
       return {...state, cart: [...state.cart, action.payload]}
     case 'remove_from_cart':
       return {...state, cart: state.cart.filter(e => {
-          return e.equipment_id === action.payload.equipment_id
+          return e.equipment_id !== action.payload.equipment_id
         })
       }
     default:
@@ -20,7 +20,7 @@ const addToCart = dispatch => (equipment) => {
 }
 
 const removeFromCart = dispatch => (equipment) => {
-  console.log('remove')
+  dispatch({type: 'remove_from_cart', payload: equipment})
 }
 
 export const {Provider, Context} = createDataContext(
