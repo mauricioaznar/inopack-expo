@@ -10,6 +10,32 @@ const equipmentReducer = (state, action) => {
           return e.equipment_id !== action.payload.equipment_id
         })
       }
+    case 'set_description':
+      return {...state, description: action.payload}
+    case 'set_date_emitted':
+      return {...state, dateEmitted: action.payload}
+    case 'add_quantity':
+      {
+        const newCart = state.cart.slice()
+        const index = newCart.findIndex(eq => {
+          return eq.equipment_id === action.payload.equipment_id
+        })
+        const newEquipment = {...newCart[index]}
+        newEquipment.quantity += 1
+        newCart[index] = newEquipment
+        return {...state, cart: newCart}
+      }
+    case 'remove_quantity':
+      {
+        const newCart = state.cart.slice()
+        const index = newCart.findIndex(eq => {
+          return eq.equipment_id === action.payload.equipment_id
+        })
+        const newEquipment = {...newCart[index]}
+        newEquipment.quantity -= 1
+        newCart[index] = newEquipment
+        return {...state, cart: newCart}
+      }
     default:
       return state
   }
@@ -23,10 +49,35 @@ const removeFromCart = dispatch => (equipment) => {
   dispatch({type: 'remove_from_cart', payload: equipment})
 }
 
+const setDescription = dispatch => (description) => {
+  dispatch({type: 'set_description', payload: description})
+}
+
+const setDateEmitted = dispatch => (dateEmitted) => {
+  dispatch({type: 'set_date_emitted', payload: dateEmitted})
+}
+
+const addQuantity = dispatch => (equipment) => {
+  dispatch({type: 'add_quantity', payload: equipment})
+}
+
+const removeQuantity = dispatch => (equipment) => {
+  dispatch({type: 'remove_quantity', payload: equipment})
+}
+
 export const {Provider, Context} = createDataContext(
   equipmentReducer,
-  {addToCart, removeFromCart},
   {
-    cart: []
+    addToCart,
+    removeFromCart,
+    setDescription,
+    setDateEmitted,
+    addQuantity,
+    removeQuantity,
+  },
+  {
+    cart: [],
+    description: '',
+    dateEmitted: ''
   }
 )

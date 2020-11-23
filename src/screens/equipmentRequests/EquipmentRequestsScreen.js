@@ -1,94 +1,111 @@
-import React, {useCallback, useContext, useState} from 'react'
-import {SafeAreaView} from 'react-native-safe-area-context'
-import {Text, FlatList, View, StyleSheet} from 'react-native'
+import React, {useContext, useState} from 'react'
+import {View, StyleSheet, FlatList, TouchableOpacity} from 'react-native'
 import {createStackNavigator} from '@react-navigation/stack';
 import {Badge, Icon, Input, ListItem} from 'react-native-elements'
-import {useFocusEffect} from '@react-navigation/native'
-import EquipmentRequestsListScreen from './EquipmentRequestsListScreen'
-import inopack from '../../api/inopack'
+import EquipmentRequestsListScreen from './ListScreen'
 import DatePicker from '../../inputs/DatePicker'
 import Spacer from '../../components/Spacer'
 import {Context as EquipmentContext, Provider as EquipmentProvider} from '../../context/EquipmentContext'
+import CreateFirstScreen from './CreateFirstScreen'
+import CreateThirdScreen from './CreateThirdScreen'
+import EquipmentInventoryScreen
+  from '../equipmentInventory/EquipmentInventoryScreen'
 
 
 const EquipmentRequestsStack = createStackNavigator()
-
-
-
-const EquipmentRequestsCreateScreen = () => {
-  const [dateEmitted, setDateEmitted] = useState('')
-  const [description, setDescription] = useState('')
-
-  return (
-    <View style={{flex: 1}}>
-      <Spacer>
-        <DatePicker
-          label={'Fecha de emisión'}
-          value={dateEmitted}
-          onChangeDate={setDateEmitted}
-        />
-      </Spacer>
-      <Spacer>
-        <Input
-          label={'Descripción'}
-          onChangeText={setDescription}
-          value={description}
-          multiline
-          numberOfLines={3}
-        />
-      </Spacer>
-    </View>
-  )
-}
 
 const EquipmentRequestsScreen = ({navigation}) => {
   const {cart} = useContext(EquipmentContext)
 
   return (
-      <EquipmentRequestsStack.Navigator>
-        <EquipmentRequestsStack.Screen
-          name="EquipmentRequestsList"
-          component={EquipmentRequestsListScreen}
-          options={{
-            title: "Pedidos",
-            headerRight: (props) => {
-              return (
-                <View style={{marginRight: 10, flexDirection: 'row'}}>
-                  <View style={{marginRight: 20}}>
-                    <Icon
-                      name="shopping-cart"
-                      type="font-awesome-5"
-                    />
-                    {
-                      cart.length > 0
-                        ? <Badge
-                            status="error"
-                            value={cart.length}
-                            containerStyle={{ position: 'absolute', top: -8, right: -7 }}
-                          />
-                        : null
-                    }
-                  </View>
+    <EquipmentRequestsStack.Navigator>
+      <EquipmentRequestsStack.Screen
+        name="EquipmentRequestsList"
+        component={EquipmentRequestsListScreen}
+        options={{
+          title: "Pedidos",
+          headerRight: (props) => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('EquipmentRequestsCreateFirstScreen')
+                }}
+              >
+                <View style={{marginRight: 15, flexDirection: 'row'}}>
                   <View>
                     <Icon
-                      name="plus"
-                      type="font-awesome-5"
-                      onPress={() => {
-                        navigation.navigate('EquipmentRequestsCreate')
-                      }}
+                      name="arrow-forward"
+                      type="material"
                     />
                   </View>
                 </View>
-              )
-            }
-          }}
-        />
-        <EquipmentRequestsStack.Screen
-          name="EquipmentRequestsCreate"
-          title="Nuevo pedido"
-          component={EquipmentRequestsCreateScreen}
-        />
-      </EquipmentRequestsStack.Navigator>
+              </TouchableOpacity>
+            )
+          }
+        }}
+      />
+      <EquipmentRequestsStack.Screen
+        name="EquipmentRequestsCreateFirstScreen"
+        component={CreateFirstScreen}
+        options={{
+          title: 'Pedido (1/3)',
+          headerRight: (props) => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('EquipmentRequestsCreateSecondScreen')
+                }}
+              >
+                <View style={{marginRight: 15, flexDirection: 'row'}}>
+                  <View>
+                    <Icon
+                      name="arrow-forward"
+                      type="material"
+                    />
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )
+          }
+        }}
+      />
+      <EquipmentRequestsStack.Screen
+        name="EquipmentRequestsCreateSecondScreen"
+        component={EquipmentInventoryScreen}
+        initialParams={{
+          isCartMode: true,
+          ignoreTop: true
+        }}
+        options={{
+          title: 'Pedido (2/3)',
+          headerRight: (props) => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('EquipmentRequestsCreateThirdScreen')
+                }}
+              >
+                <View style={{marginRight: 15, flexDirection: 'row'}}>
+                  <View>
+                    <Icon
+                      name="arrow-forward"
+                      type="material"
+                    />
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )
+          }
+        }}
+      />
+      <EquipmentRequestsStack.Screen
+        name="EquipmentRequestsCreateThirdScreen"
+        component={CreateThirdScreen}
+        options={{
+          title: 'Pedido (3/3)'
+        }}
+      />
+    </EquipmentRequestsStack.Navigator>
   )
 }
 

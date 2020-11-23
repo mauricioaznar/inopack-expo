@@ -1,11 +1,8 @@
 import React, {useCallback, useContext, useState} from 'react'
 import {
   Text,
-  FlatList,
   StyleSheet,
   SectionList,
-  View,
-  TouchableOpacity
 } from 'react-native'
 import {useFocusEffect} from '@react-navigation/native'
 import {SafeAreaView} from 'react-native-safe-area-context'
@@ -14,12 +11,13 @@ import {SearchBar, ListItem, Badge} from 'react-native-elements'
 import Spacer from '../../components/Spacer'
 import {Context as EquipmentContext} from '../../context/EquipmentContext'
 
-const EquipmentInventoryScreen = (props) => {
+const EquipmentInventoryScreen = ({route}) => {
   const [equipmentSections, setEquipmentSections] = useState([])
   const [searchedText, setSearchedText] = useState('')
   const {cart, addToCart, removeFromCart} = useContext(EquipmentContext)
 
-  console.log(cart)
+  let isCartMode = route.params?.isCartMode
+  let ignoreTop = route.params?.ignoreTop
 
   const filteredSections = equipmentSections
     .map(eS => {
@@ -36,6 +34,12 @@ const EquipmentInventoryScreen = (props) => {
     .filter(eS => {
       return eS.data.length > 0
     })
+
+  const isInCart = (equipment) => {
+    return cart.find(e => {
+      return e.equipment_id === equipment.equipment_id
+    })
+  }
 
   useFocusEffect(useCallback(() => {
 
@@ -62,7 +66,8 @@ const EquipmentInventoryScreen = (props) => {
                         equipment_description: eq.equipment_description,
                         equipment_subcategory_name: eq.equipment_subcategory_name,
                         equipment_subcategory_id: eq.equipment_subcategory_id,
-                        equipment_selected: false
+                        equipment_selected: isCartMode && isInCart(eq),
+                        quantity: 0
                       }
                     })
                 }
@@ -85,15 +90,17 @@ const EquipmentInventoryScreen = (props) => {
     }, [])
   )
 
-  const isInCart = (equipment) => {
-    return cart.find(e => {
-      return e.equipment_id === equipment.equipment_id
-    })
+  let edges = ['right', 'bottom', 'left', 'top']
+
+  if (ignoreTop) {
+    edges = ['right', 'bottom', 'left']
   }
 
-
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView
+      style={{flex: 1}}
+      edges={edges}
+    >
       <SearchBar
         platform={'android'}
         value={searchedText}
@@ -125,19 +132,23 @@ const EquipmentInventoryScreen = (props) => {
             <ListItem.Content>
               <ListItem.Title>{item.equipment_description}</ListItem.Title>
             </ListItem.Content>
-            <ListItem.CheckBox
-              checked={item.equipment_selected}
-              onPress={() => {
-                let newEquipmentSections = [...equipmentSections]
-                let newEquipmentSection = newEquipmentSections.find(eS => eS.id === item.equipment_subcategory_id)
-                let newEquipmentData = [...newEquipmentSection.data]
-                let newEquipmentItem = newEquipmentData.find(i => i.equipment_id === item.equipment_id)
-                newEquipmentItem.equipment_selected = !newEquipmentItem.equipment_selected
-                newEquipmentSection.data = newEquipmentData
-                setEquipmentSections(newEquipmentSections)
-                isInCart(item.equipment_id) ? removeFromCart(item) : addToCart(item)
-              }}
-            />
+            {
+             isCartMode
+               ? <ListItem.CheckBox
+                   checked={item.equipment_selected}
+                   onPress={() => {
+                     let newEquipmentSections = [...equipmentSections]
+                     let newEquipmentSection = newEquipmentSections.find(eS => eS.id === item.equipment_subcategory_id)
+                     let newEquipmentData = [...newEquipmentSection.data]
+                     let newEquipmentItem = newEquipmentData.find(i => i.equipment_id === item.equipment_id)
+                     newEquipmentItem.equipment_selected ? removeFromCart(item) : addToCart(item)
+                     newEquipmentItem.equipment_selected = !newEquipmentItem.equipment_selected
+                     newEquipmentSection.data = newEquipmentData
+                     setEquipmentSections(newEquipmentSections)
+                   }}
+                 />
+               : null
+            }
           </ListItem>
         }}
         renderSectionHeader={({section}) =>
