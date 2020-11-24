@@ -1,5 +1,6 @@
 import React from 'react'
 import createDataContext from './createDataContext'
+import inopack from '../api/inopack'
 
 const equipmentReducer = (state, action) => {
   switch(action.type) {
@@ -36,6 +37,14 @@ const equipmentReducer = (state, action) => {
         newCart[index] = newEquipment
         return {...state, cart: newCart}
       }
+    case 'set_equipments':
+    {
+      return {...state, equipments: action.payload}
+    }
+    case 'set_equipment_subcategories':
+    {
+      return {...state, equipmentSubcategories: action.payload}
+    }
     default:
       return state
   }
@@ -65,6 +74,18 @@ const removeQuantity = dispatch => (equipment) => {
   dispatch({type: 'remove_quantity', payload: equipment})
 }
 
+const getEquipments = dispatch => async () => {
+  const equipmentResponse = await inopack.get('stats/equipmentInventory')
+  const equipments = equipmentResponse.data.data
+  dispatch({type: 'set_equipments', payload: equipments})
+}
+
+const getEquipmentSubcategories = dispatch => async () => {
+  const equipmentSubcategoryResponse = await inopack.get('equipmentSubcategory/list?simple=true&paginate=false')
+  const equipmentSubcategories = equipmentSubcategoryResponse.data.data
+  dispatch({type: 'set_equipment_subcategories', payload: equipmentSubcategories})
+}
+
 export const {Provider, Context} = createDataContext(
   equipmentReducer,
   {
@@ -74,8 +95,12 @@ export const {Provider, Context} = createDataContext(
     setDateEmitted,
     addQuantity,
     removeQuantity,
+    getEquipments,
+    getEquipmentSubcategories
   },
   {
+    equipments: [],
+    equipmentSubcategories: [],
     cart: [],
     description: '',
     dateEmitted: ''

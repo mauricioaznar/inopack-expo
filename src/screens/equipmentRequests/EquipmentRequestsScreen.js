@@ -10,6 +10,7 @@ import CreateFirstScreen from './CreateFirstScreen'
 import CreateThirdScreen from './CreateThirdScreen'
 import EquipmentInventoryScreen
   from '../equipmentInventory/EquipmentInventoryScreen'
+import EquipmentQuantityDetailScreen from './EquipmentQuantityDetailScreen'
 
 
 const EquipmentRequestsStack = createStackNavigator()
@@ -103,6 +104,16 @@ const EquipmentRequestsScreen = ({navigation}) => {
         component={CreateThirdScreen}
         options={{
           title: 'Pedido (3/3)'
+        }}
+      />
+      <EquipmentRequestsStack.Screen
+        name="EquipmentQuantityDetailScreen"
+        component={EquipmentQuantityDetailScreen}
+        options={{
+          title: 'Cantidad solicitada'
+        }}
+        initialParams={{
+          hasQuantity: true
         }}
       />
     </EquipmentRequestsStack.Navigator>

@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useEffect} from 'react'
 import {View} from 'react-native'
 import EquipmentInventoryScreen
   from './equipmentInventory/EquipmentInventoryScreen'
@@ -16,7 +16,15 @@ import {
 const EquipmentScreen = ({}) => {
   const EquipmentTabs = createBottomTabNavigator()
 
-  const {cart} = useContext(EquipmentContext)
+  const {cart, getEquipments, getEquipmentSubcategories} = useContext(EquipmentContext)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getEquipments()
+      await getEquipmentSubcategories()
+    }
+    fetchData()
+  }, [])
 
   return (
     <EquipmentTabs.Navigator
@@ -28,7 +36,12 @@ const EquipmentScreen = ({}) => {
         options={{
           title: "Inventario",
           tabBarIcon: ({color, size}) => {
-            return (<Icon type="material" name="storage" size={size} color={color} />)
+            return (<Icon
+              type="material"
+              name="storage"
+              size={size}
+              color={color}
+            />)
           },
         }}
       />
@@ -40,13 +53,18 @@ const EquipmentScreen = ({}) => {
           tabBarIcon: ({color, size}) => {
             return (
               <View>
-                <Icon type="font-awesome-5" name="shopping-bag" size={size} color={color} />
+                <Icon
+                  type="font-awesome-5"
+                  name="shopping-bag"
+                  size={size}
+                  color={color}
+                />
                 {
                   cart.length > 0
                     ? <Badge
                       status="error"
                       value={cart.length}
-                      containerStyle={{ position: 'absolute', top: -3, right: -7 }}
+                      containerStyle={{position: 'absolute', top: -3, right: -7}}
                     />
                     : null
                 }
@@ -66,10 +84,10 @@ const EquipmentScreen = ({}) => {
   )
 }
 
-export default  () => {
+export default () => {
   return (
     <EquipmentProvider>
-      <EquipmentScreen/>
+      <EquipmentScreen />
     </EquipmentProvider>
   )
 }
