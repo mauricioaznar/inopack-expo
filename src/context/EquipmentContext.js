@@ -37,9 +37,24 @@ const equipmentReducer = (state, action) => {
         newCart[index] = newEquipment
         return {...state, cart: newCart}
       }
+    case 'update_equipment_quantity':
+      {
+        const newEquipments = state.equipments.slice()
+        const index = newEquipments.findIndex(eq => {
+          return eq.equipment_id === action.payload.equipment.equipment_id
+        })
+        const newEquipment = {...newEquipments[index]}
+        newEquipment.quantity_requested = action.payload.quantity
+        newEquipments[index] = newEquipment
+        return {...state, equipments: newEquipments}
+      }
     case 'set_equipments':
     {
-      return {...state, equipments: action.payload}
+      const equipments = action.payload
+        .map((equipment) => {
+          return {...equipment, quantity_requested: 0}
+        })
+      return {...state, equipments: equipments}
     }
     case 'set_equipment_subcategories':
     {
@@ -86,6 +101,10 @@ const getEquipmentSubcategories = dispatch => async () => {
   dispatch({type: 'set_equipment_subcategories', payload: equipmentSubcategories})
 }
 
+const updateEquipmentQuantity = dispatch => (equipment, quantity) => {
+  dispatch({type: 'update_equipment_quantity', payload: {equipment, quantity}})
+}
+
 export const {Provider, Context} = createDataContext(
   equipmentReducer,
   {
@@ -96,7 +115,8 @@ export const {Provider, Context} = createDataContext(
     addQuantity,
     removeQuantity,
     getEquipments,
-    getEquipmentSubcategories
+    getEquipmentSubcategories,
+    updateEquipmentQuantity
   },
   {
     equipments: [],

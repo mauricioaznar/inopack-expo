@@ -6,7 +6,7 @@ import Spacer from '../../components/Spacer'
 
 
 const EquipmentQuantityDetailScreen = ({route, navigation}) => {
-  const {equipments, addQuantity, removeQuantity} = useContext(EquipmentContext)
+  const {equipments, updateEquipmentQuantity} = useContext(EquipmentContext)
   const [quantity, setQuantity] = useState(0)
   const [equipment, setEquipment] = useState(null)
 
@@ -76,6 +76,7 @@ const EquipmentQuantityDetailScreen = ({route, navigation}) => {
               'Aceptar'
             }
             onPress={() => {
+              updateEquipmentQuantity(equipment, quantity)
               navigation.goBack()
             }}
           >

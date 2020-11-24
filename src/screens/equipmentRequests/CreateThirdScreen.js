@@ -6,43 +6,30 @@ import {Context as EquipmentContext} from '../../context/EquipmentContext'
 const CreateThirdScreen = (props) => {
 
   const {
-    cart,
-    addQuantity,
-    removeQuantity
+    equipments
   } = useContext(EquipmentContext)
+
+  const filteredEquipments = equipments
+    .filter(e => e.quantity_requested > 0)
 
   return (
     <View>
       <FlatList
         keyExtractor={item => String(item.equipment_id)}
-        data={cart}
+        data={filteredEquipments}
         renderItem={({item}) => {
           return (
-            <ListItem>
+            <ListItem
+              bottomDivider
+            >
               <ListItem.Content>
                 <ListItem.Title>
                   {item.equipment_description}
                 </ListItem.Title>
               </ListItem.Content>
               <View style={{flexDirection: 'row'}}>
-                <Icon
-                  type="font-awesome-5"
-                  name="plus"
-                  raised
-                  onPress={() => {
-                    addQuantity(item)
-                  }}
-                />
-                <Icon
-                  type="font-awesome-5"
-                  name="minus"
-                  raised
-                  onPress={() => {
-                    removeQuantity(item)
-                  }}
-                />
-                <Text h4 style={{alignSelf: 'center', marginHorizontal: 10}}>
-                  {item.quantity}
+                <Text style={{alignSelf: 'center', marginHorizontal: 10}}>
+                  {item.quantity_requested}
                 </Text>
               </View>
             </ListItem>

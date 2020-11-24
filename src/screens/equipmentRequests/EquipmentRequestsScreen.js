@@ -74,7 +74,7 @@ const EquipmentRequestsScreen = ({navigation}) => {
         name="EquipmentRequestsCreateSecondScreen"
         component={EquipmentInventoryScreen}
         initialParams={{
-          isCartMode: true,
+          hasQuantity: true,
           ignoreTop: true
         }}
         options={{
@@ -111,9 +111,6 @@ const EquipmentRequestsScreen = ({navigation}) => {
         component={EquipmentQuantityDetailScreen}
         options={{
           title: 'Cantidad solicitada'
-        }}
-        initialParams={{
-          hasQuantity: true
         }}
       />
     </EquipmentRequestsStack.Navigator>

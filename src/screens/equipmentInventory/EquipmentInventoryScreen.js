@@ -19,6 +19,9 @@ const EquipmentInventoryScreen = ({route, navigation}) => {
   } = useContext(EquipmentContext)
 
   let ignoreTop = route.params?.ignoreTop
+  let hasQuantity = route.params?.hasQuantity
+
+  console.log(route.params)
 
   useEffect(() => {
 
@@ -101,8 +104,11 @@ const EquipmentInventoryScreen = ({route, navigation}) => {
         renderItem={({item}) => {
 
           return <TouchableOpacity
+            disabled={!hasQuantity}
             onPress={() => {
-              navigation.navigate('EquipmentQuantityDetailScreen', {id: item.equipment_id})
+              if (hasQuantity) {
+                navigation.navigate('EquipmentQuantityDetailScreen', {id: item.equipment_id})
+              }
             }}
           >
             <ListItem
@@ -114,8 +120,15 @@ const EquipmentInventoryScreen = ({route, navigation}) => {
               <ListItem.Content>
                 <ListItem.Title>{item.equipment_description}</ListItem.Title>
               </ListItem.Content>
+              {
+                hasQuantity && item.quantity_requested > 0 ? <Text>{item.quantity_requested}</Text> : null
+              }
+              {
+                hasQuantity ? <ListItem.Chevron /> : null
+              }
             </ListItem>
           </TouchableOpacity>
+
         }}
         renderSectionHeader={({section}) =>
           <Spacer>
