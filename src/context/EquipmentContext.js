@@ -123,9 +123,10 @@ const updateEquipmentQuantity = dispatch => (equipment, quantity) => {
   dispatch({type: 'update_equipment_quantity', payload: {equipment, quantity}})
 }
 
-const postEquipmentRequest = dispatch => async (dateEmitted, description, equipments) => {
+const postEquipmentRequest = dispatch => async (dateEmitted, dateEstimatedDelivery, description, equipments) => {
   const newEquipmentRequest = {
     date_emitted: dateEmitted,
+    date_estimated_delivery: dateEstimatedDelivery,
     description: description,
     equipment_transaction_type_id: 1,
     equipment_transaction_status_id: 1

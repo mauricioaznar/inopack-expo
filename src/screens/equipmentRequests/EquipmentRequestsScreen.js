@@ -19,6 +19,7 @@ const EquipmentRequestsScreen = ({navigation}) => {
   const {
     description,
     dateEmitted,
+    dateEstimatedDelivery,
     equipments,
     postEquipmentRequest,
     resetEquipmentRequestsForm
@@ -95,6 +96,7 @@ const EquipmentRequestsScreen = ({navigation}) => {
                   setDisableSave(true)
                   await postEquipmentRequest(
                     dateEmitted,
+                    dateEstimatedDelivery,
                     description,
                     equipments.filter(e => e.quantity_requested > 0)
                   )
