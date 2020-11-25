@@ -21,8 +21,6 @@ const EquipmentInventoryScreen = ({route, navigation}) => {
   let ignoreTop = route.params?.ignoreTop
   let hasQuantity = route.params?.hasQuantity
 
-  console.log(route.params)
-
   useEffect(() => {
 
     let eS = equipmentSubcategories

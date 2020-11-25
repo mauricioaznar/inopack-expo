@@ -1,10 +1,9 @@
 import React, {useContext, useState} from 'react'
 import {View, StyleSheet, FlatList, TouchableOpacity} from 'react-native'
 import {createStackNavigator} from '@react-navigation/stack';
-import {Badge, Icon, Input, ListItem} from 'react-native-elements'
+import { CommonActions } from '@react-navigation/native';
+import { Icon} from 'react-native-elements'
 import EquipmentRequestsListScreen from './ListScreen'
-import DatePicker from '../../inputs/DatePicker'
-import Spacer from '../../components/Spacer'
 import {Context as EquipmentContext, Provider as EquipmentProvider} from '../../context/EquipmentContext'
 import CreateFirstScreen from './CreateFirstScreen'
 import CreateThirdScreen from './CreateThirdScreen'
@@ -16,7 +15,14 @@ import EquipmentQuantityDetailScreen from './EquipmentQuantityDetailScreen'
 const EquipmentRequestsStack = createStackNavigator()
 
 const EquipmentRequestsScreen = ({navigation}) => {
-  const {cart} = useContext(EquipmentContext)
+  const {
+    description,
+    dateEmitted,
+    equipments,
+    postEquipmentRequest,
+    resetEquipmentRequestsForm
+  } = useContext(EquipmentContext)
+  const [disableSave, setDisableSave] = useState(false)
 
   return (
     <EquipmentRequestsStack.Navigator>
@@ -103,7 +109,40 @@ const EquipmentRequestsScreen = ({navigation}) => {
         name="EquipmentRequestsCreateThirdScreen"
         component={CreateThirdScreen}
         options={{
-          title: 'Pedido (3/3)'
+          title: 'Pedido (3/3)',
+          headerRight: (props) => {
+            return (
+              <TouchableOpacity
+                disabled={disableSave}
+                onPress={async () => {
+                  setDisableSave(true)
+                  await postEquipmentRequest(
+                    dateEmitted,
+                    description,
+                    equipments.filter(e => e.quantity_requested > 0)
+                  )
+                  await resetEquipmentRequestsForm()
+                  navigation.dispatch(
+                    CommonActions.reset({
+                      index: 0,
+                      routes: [
+                        { name: 'EquipmentRequestsList' },
+                      ],
+                    })
+                  );
+                }}
+              >
+                <View style={{marginRight: 15, flexDirection: 'row'}}>
+                  <View>
+                    <Icon
+                      name="save"
+                      type="material"
+                    />
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )
+          }
         }}
       />
       <EquipmentRequestsStack.Screen

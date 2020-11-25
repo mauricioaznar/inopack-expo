@@ -60,6 +60,18 @@ const equipmentReducer = (state, action) => {
     {
       return {...state, equipmentSubcategories: action.payload}
     }
+    case 'reset':
+    {
+      return {
+        ...state,
+        description: '',
+        dateEmitted: '',
+        equipments: state.equipments
+          .map((equipment) => {
+            return {...equipment, quantity_requested: 0}
+          })
+      }
+    }
     default:
       return state
   }
@@ -105,6 +117,30 @@ const updateEquipmentQuantity = dispatch => (equipment, quantity) => {
   dispatch({type: 'update_equipment_quantity', payload: {equipment, quantity}})
 }
 
+const postEquipmentRequest = dispatch => async (dateEmitted, description, equipments) => {
+  const newEquipmentRequest = {
+    date_emitted: dateEmitted,
+    description: description,
+    equipment_transaction_type_id: 1,
+    equipment_transaction_status_id: 1
+  }
+  const response = await inopack.post('equipmentTransaction', newEquipmentRequest)
+  const promises = []
+  equipments.forEach((equipment) => {
+    const newEquipmentItem = {
+      equipment_transaction_id: response.data.data.id,
+      equipment_id: equipment.equipment_id,
+      quantity: equipment.quantity_requested
+    }
+    promises.push(inopack.post('equipmentTransactionItem', newEquipmentItem))
+  })
+  const responses = await Promise.all(promises)
+}
+
+const resetEquipmentRequestsForm = dispatch => async () => {
+  dispatch({type: 'reset'})
+}
+
 export const {Provider, Context} = createDataContext(
   equipmentReducer,
   {
@@ -116,7 +152,9 @@ export const {Provider, Context} = createDataContext(
     removeQuantity,
     getEquipments,
     getEquipmentSubcategories,
-    updateEquipmentQuantity
+    updateEquipmentQuantity,
+    postEquipmentRequest,
+    resetEquipmentRequestsForm
   },
   {
     equipments: [],

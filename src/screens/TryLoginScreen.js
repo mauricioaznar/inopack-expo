@@ -22,9 +22,6 @@ export default () => {
         const email = await AsyncStorage.getItem('email')
         const password = await AsyncStorage.getItem('password')
         if (email, password) {
-          console.log('gets called')
-          console.log(email)
-          console.log(password)
           await login(email, password, callback)
         }
       } catch (e) {
