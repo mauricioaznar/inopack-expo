@@ -73,13 +73,6 @@ const EquipmentScreen = ({}) => {
           }
         }}
       />
-      <EquipmentTabs.Screen
-        name="EquipmentWithdrawals"
-        component={EquipmentWithdrawalScreen}
-        options={{
-          title: "Retiros"
-        }}
-      />
     </EquipmentTabs.Navigator>
   )
 }
