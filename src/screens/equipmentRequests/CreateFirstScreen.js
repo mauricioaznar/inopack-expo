@@ -9,9 +9,10 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 const CreateFirstScreen = ({navigation}) => {
 
   const {
-    cart,
     dateEmitted,
     setDateEmitted,
+    dateEstimatedDelivery,
+    setDateEstimatedDelivery,
     description,
     setDescription
   } = useContext(EquipmentContext)
@@ -32,6 +33,13 @@ const CreateFirstScreen = ({navigation}) => {
           />
         </Spacer>
         <Spacer>
+          <DatePicker
+            label={'Fecha estimada de entrega'}
+            value={dateEstimatedDelivery}
+            onChangeDate={setDateEstimatedDelivery}
+          />
+        </Spacer>
+        <Spacer>
           <Input
             label={'Descripción'}
             onChangeText={setDescription}
@@ -40,26 +48,6 @@ const CreateFirstScreen = ({navigation}) => {
             numberOfLines={3}
           />
         </Spacer>
-        <Spacer>
-          <Input
-            label={'Fecha de entrega estimada'}
-          />
-        </Spacer>
-        <Spacer>
-          <Input
-            label={'Este es un input de prueba'}
-          />
-        </Spacer>
-        <View>
-          <Spacer>
-            <Button
-              title={'Siguente'}
-              onPress={() => {
-                navigation.navigate('EquipmentRequestsCreateSecondScreen')
-              }}
-            />
-          </Spacer>
-        </View>
       </KeyboardAvoidingView>
     </ScrollView>
   )

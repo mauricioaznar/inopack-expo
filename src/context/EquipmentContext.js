@@ -15,6 +15,8 @@ const equipmentReducer = (state, action) => {
       return {...state, description: action.payload}
     case 'set_date_emitted':
       return {...state, dateEmitted: action.payload}
+    case 'set_date_estimated_delivery':
+      return {...state, dateEstimatedDelivery: action.payload}
     case 'add_quantity':
       {
         const newCart = state.cart.slice()
@@ -93,6 +95,10 @@ const setDateEmitted = dispatch => (dateEmitted) => {
   dispatch({type: 'set_date_emitted', payload: dateEmitted})
 }
 
+const setDateEstimatedDelivery = dispatch => (dateEstimatedDelivery) => {
+  dispatch({type: 'set_date_estimated_delivery', payload: dateEstimatedDelivery})
+}
+
 const addQuantity = dispatch => (equipment) => {
   dispatch({type: 'add_quantity', payload: equipment})
 }
@@ -148,6 +154,7 @@ export const {Provider, Context} = createDataContext(
     removeFromCart,
     setDescription,
     setDateEmitted,
+    setDateEstimatedDelivery,
     addQuantity,
     removeQuantity,
     getEquipments,
@@ -161,6 +168,7 @@ export const {Provider, Context} = createDataContext(
     equipmentSubcategories: [],
     cart: [],
     description: '',
-    dateEmitted: ''
+    dateEmitted: '',
+    dateEstimatedDelivery: ''
   }
 )

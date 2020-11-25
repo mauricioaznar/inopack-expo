@@ -23,7 +23,9 @@ const EquipmentQuantityDetailScreen = ({route, navigation}) => {
   }
 
   const decrease = () => {
-    setQuantity(quantity - 1)
+    if (quantity > 0) {
+      setQuantity(quantity - 1)
+    }
   }
 
   return (

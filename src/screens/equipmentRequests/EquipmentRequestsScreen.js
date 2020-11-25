@@ -10,6 +10,7 @@ import CreateThirdScreen from './CreateThirdScreen'
 import EquipmentInventoryScreen
   from '../equipmentInventory/EquipmentInventoryScreen'
 import EquipmentQuantityDetailScreen from './EquipmentQuantityDetailScreen'
+import HeaderRightButton from '../../components/HeaderRightButton'
 
 
 const EquipmentRequestsStack = createStackNavigator()
@@ -33,20 +34,12 @@ const EquipmentRequestsScreen = ({navigation}) => {
           title: "Pedidos",
           headerRight: (props) => {
             return (
-              <TouchableOpacity
+              <HeaderRightButton
                 onPress={() => {
                   navigation.navigate('EquipmentRequestsCreateFirstScreen')
                 }}
-              >
-                <View style={{marginRight: 15, flexDirection: 'row'}}>
-                  <View>
-                    <Icon
-                      name="arrow-forward"
-                      type="material"
-                    />
-                  </View>
-                </View>
-              </TouchableOpacity>
+                iconName="add"
+              />
             )
           }
         }}
@@ -55,23 +48,15 @@ const EquipmentRequestsScreen = ({navigation}) => {
         name="EquipmentRequestsCreateFirstScreen"
         component={CreateFirstScreen}
         options={{
-          title: 'Pedido (1/3)',
+          title: 'Nuevo pedido (1/3)',
           headerRight: (props) => {
             return (
-              <TouchableOpacity
+              <HeaderRightButton
                 onPress={() => {
                   navigation.navigate('EquipmentRequestsCreateSecondScreen')
                 }}
-              >
-                <View style={{marginRight: 15, flexDirection: 'row'}}>
-                  <View>
-                    <Icon
-                      name="arrow-forward"
-                      type="material"
-                    />
-                  </View>
-                </View>
-              </TouchableOpacity>
+                iconName="arrow-forward"
+              />
             )
           }
         }}
@@ -87,20 +72,12 @@ const EquipmentRequestsScreen = ({navigation}) => {
           title: 'Pedido (2/3)',
           headerRight: (props) => {
             return (
-              <TouchableOpacity
+              <HeaderRightButton
                 onPress={() => {
                   navigation.navigate('EquipmentRequestsCreateThirdScreen')
                 }}
-              >
-                <View style={{marginRight: 15, flexDirection: 'row'}}>
-                  <View>
-                    <Icon
-                      name="arrow-forward"
-                      type="material"
-                    />
-                  </View>
-                </View>
-              </TouchableOpacity>
+                iconName="arrow-forward"
+              />
             )
           }
         }}
@@ -112,7 +89,7 @@ const EquipmentRequestsScreen = ({navigation}) => {
           title: 'Pedido (3/3)',
           headerRight: (props) => {
             return (
-              <TouchableOpacity
+              <HeaderRightButton
                 disabled={disableSave}
                 onPress={async () => {
                   setDisableSave(true)
@@ -131,16 +108,8 @@ const EquipmentRequestsScreen = ({navigation}) => {
                     })
                   );
                 }}
-              >
-                <View style={{marginRight: 15, flexDirection: 'row'}}>
-                  <View>
-                    <Icon
-                      name="save"
-                      type="material"
-                    />
-                  </View>
-                </View>
-              </TouchableOpacity>
+                iconName="save"
+              />
             )
           }
         }}
