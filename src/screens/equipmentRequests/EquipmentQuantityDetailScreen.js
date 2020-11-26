@@ -41,15 +41,19 @@ const EquipmentQuantityDetailScreen = ({route, navigation}) => {
             </Text>
           </Spacer>
 
-          <Spacer>
-            <Image
-              style={{ width: '100%', height: undefined, aspectRatio: 1 }}
-              source={{
-                uri: imageUrl + equipment.equipment_id + '.jpg'
-              }}
-            >
-            </Image>
-          </Spacer>
+         {
+           equipment.image_name
+             ? <Spacer>
+                <Image
+                  style={{ width: '100%', height: undefined, aspectRatio: 1 }}
+                  source={{
+                    uri: imageUrl + equipment.image_name
+                  }}
+                >
+                </Image>
+              </Spacer>
+             : null
+         }
 
           <View style={{flex: 1, justifyContent: 'flex-end'}}>
             <Spacer>
