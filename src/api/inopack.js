@@ -1,8 +1,7 @@
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import apiUrl from './apiUrl'
 
-const apiUrl = __DEV__ ?
-  'https://6cbafc78573a.ngrok.io/api/' : 'https://inoserver.grupoinopack.com/api/'
 
 const instance = axios.create(
   { baseURL: apiUrl }

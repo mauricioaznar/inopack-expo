@@ -3,6 +3,7 @@ import { ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Context as AuthContext } from '../context/AuthContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Loader from '../components/Loader'
 
 
 export default () => {
@@ -33,6 +34,6 @@ export default () => {
   }, [])
 
   return <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
-    <ActivityIndicator size="large" color="#0000ff"/>
+    <Loader />
   </SafeAreaView>
 }
