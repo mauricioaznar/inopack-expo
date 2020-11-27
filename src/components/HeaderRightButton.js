@@ -1,5 +1,5 @@
 import React from 'react'
-import {TouchableOpacity, View} from 'react-native'
+import {ActivityIndicator, TouchableOpacity, View} from 'react-native'
 import {Icon} from 'react-native-elements'
 
 const HeaderRightButton = (
@@ -7,7 +7,8 @@ const HeaderRightButton = (
     iconName,
     iconType = 'material',
     onPress,
-    disabled = false
+    disabled = false,
+    loading = false
   }) =>
 {
   return (
@@ -17,10 +18,14 @@ const HeaderRightButton = (
     >
       <View style={{marginRight: 15, flexDirection: 'row'}}>
         <View>
-          <Icon
-            name={iconName}
-            type={iconType}
-          />
+          {
+            loading
+              ? <ActivityIndicator size="small" color="#000000" />
+              : <Icon
+                  name={iconName}
+                  type={iconType}
+                />
+          }
         </View>
       </View>
     </TouchableOpacity>

@@ -11,6 +11,7 @@ import EquipmentInventoryScreen
   from '../equipmentInventory/EquipmentInventoryScreen'
 import EquipmentQuantityDetailScreen from './EquipmentQuantityDetailScreen'
 import HeaderRightButton from '../../components/HeaderRightButton'
+import sleep from '../../helpers/sleep'
 
 
 const EquipmentRequestsStack = createStackNavigator()
@@ -24,7 +25,10 @@ const EquipmentRequestsScreen = ({navigation}) => {
     postEquipmentRequest,
     resetEquipmentRequestsForm
   } = useContext(EquipmentContext)
+
   const [disableSave, setDisableSave] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
 
   return (
     <EquipmentRequestsStack.Navigator>
@@ -91,8 +95,10 @@ const EquipmentRequestsScreen = ({navigation}) => {
           headerRight: (props) => {
             return (
               <HeaderRightButton
+                loading={loading}
                 disabled={disableSave}
                 onPress={async () => {
+                  setLoading(true)
                   setDisableSave(true)
                   await postEquipmentRequest(
                     dateEmitted,
@@ -101,6 +107,8 @@ const EquipmentRequestsScreen = ({navigation}) => {
                     equipments.filter(e => e.quantity_requested > 0)
                   )
                   await resetEquipmentRequestsForm()
+                  setLoading(false)
+                  setSuccess(true)
                   navigation.dispatch(
                     CommonActions.reset({
                       index: 0,
@@ -109,8 +117,9 @@ const EquipmentRequestsScreen = ({navigation}) => {
                       ],
                     })
                   );
+                  setSuccess(false)
                 }}
-                iconName="save"
+                iconName={success ? 'check' : 'save'}
               />
             )
           }

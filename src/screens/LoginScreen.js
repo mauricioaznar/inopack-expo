@@ -14,7 +14,12 @@ const LoginScreen = ({onSubmit}) => {
   const [password, setPassword] = useState(
     __DEV__ ? 'maurisio610261' : '')
   const [remember, setRemember] = useState(true)
-  const {login} = useContext(AuthContext)
+  const [loading, setLoading] = useState(false)
+
+  const {
+    login,
+    errorMessage
+  } = useContext(AuthContext)
 
   useEffect(() => {
     const setInitialValues = async () => {
@@ -30,6 +35,7 @@ const LoginScreen = ({onSubmit}) => {
   }, [])
 
   const callback = (isValid) => {
+    setLoading(false)
     const saveValues = async () => {
       await AsyncStorage.setItem('email', email)
       await AsyncStorage.setItem('password', password)
@@ -73,10 +79,23 @@ const LoginScreen = ({onSubmit}) => {
           onPress={() => {setRemember(!remember)}}
         />
       </Spacer>
+      {
+        errorMessage && errorMessage !== ''
+          ? <Spacer>
+              <Text style={{color: 'red'}}>
+                {errorMessage}
+              </Text>
+            </Spacer>
+          : null
+      }
+      <Spacer>
+      </Spacer>
       <Spacer>
         <Button
           title="Ingresar"
+          loading={loading}
           onPress={() => {
+            setLoading(true)
             login(email, password, callback)
           }}
         />

@@ -12,6 +12,7 @@ import {
   Provider as EquipmentProvider,
   Context as EquipmentContext
 } from '../context/EquipmentContext'
+import LogoutScreen from './LogoutScreen'
 
 const EquipmentScreen = ({}) => {
   const EquipmentTabs = createBottomTabNavigator()
@@ -73,6 +74,27 @@ const EquipmentScreen = ({}) => {
           }
         }}
       />
+      <EquipmentTabs.Screen
+        name="LogoutScreen"
+        component={LogoutScreen}
+        options={{
+          title: 'Cuenta',
+          tabBarIcon: ({color, size}) => {
+            return (
+              <View>
+                <Icon
+                  type="material-community"
+                  name="logout"
+                  size={size}
+                  color={color}
+                />
+              </View>
+            )
+          }
+        }}
+      >
+
+      </EquipmentTabs.Screen>
     </EquipmentTabs.Navigator>
   )
 }
