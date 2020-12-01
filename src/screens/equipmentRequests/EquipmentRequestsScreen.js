@@ -6,12 +6,13 @@ import { Icon} from 'react-native-elements'
 import EquipmentRequestsListScreen from './ListScreen'
 import {Context as EquipmentContext, Provider as EquipmentProvider} from '../../context/EquipmentContext'
 import CreateFirstScreen from './CreateFirstScreen'
-import CreateThirdScreen from './CreateThirdScreen'
 import EquipmentInventoryScreen
   from '../equipmentInventory/EquipmentInventoryScreen'
 import EquipmentQuantityDetailScreen from './EquipmentQuantityDetailScreen'
 import HeaderRightButton from '../../components/HeaderRightButton'
-import sleep from '../../helpers/sleep'
+import moment from 'moment'
+import dateFormat from '../../helpers/dateFormat'
+import requestedEquipments from './helpers/filters'
 
 
 const EquipmentRequestsStack = createStackNavigator()
@@ -23,12 +24,20 @@ const EquipmentRequestsScreen = ({navigation}) => {
     dateEstimatedDelivery,
     equipments,
     postEquipmentRequest,
-    resetEquipmentRequestsForm
+    resetEquipmentRequestsForm,
+    toggleQuantityFilter,
+    quantityFilter
   } = useContext(EquipmentContext)
 
   const [disableSave, setDisableSave] = useState(false)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+
+  const firstStepCompleted = moment(dateEmitted, dateFormat).isValid()
+    && moment(dateEstimatedDelivery, dateFormat)
+    && description.length > 10
+
+  const secondStepCompleted = requestedEquipments(equipments).length > 0
 
   return (
     <EquipmentRequestsStack.Navigator>
@@ -53,15 +62,20 @@ const EquipmentRequestsScreen = ({navigation}) => {
         name="EquipmentRequestsCreateFirstScreen"
         component={CreateFirstScreen}
         options={{
-          title: 'Nuevo pedido (1/3)',
+          title: 'Nuevo pedido (1/2)',
           headerRight: (props) => {
             return (
-              <HeaderRightButton
-                onPress={() => {
-                  navigation.navigate('EquipmentRequestsCreateSecondScreen')
-                }}
-                iconName="arrow-forward"
-              />
+              firstStepCompleted
+              ? <HeaderRightButton
+                  onPress={() => {
+                    navigation.navigate('EquipmentRequestsCreateSecondScreen')
+                  }}
+                  iconName="arrow-forward"
+                />
+              : <HeaderRightButton
+                  disabled={true}
+                  iconName="clear"
+                />
             )
           }
         }}
@@ -74,53 +88,52 @@ const EquipmentRequestsScreen = ({navigation}) => {
           ignoreTop: true
         }}
         options={{
-          title: 'Pedido (2/3)',
+          title: 'Nuevo pedido (2/2)',
           headerRight: (props) => {
             return (
-              <HeaderRightButton
-                onPress={() => {
-                  navigation.navigate('EquipmentRequestsCreateThirdScreen')
-                }}
-                iconName="arrow-forward"
-              />
-            )
-          }
-        }}
-      />
-      <EquipmentRequestsStack.Screen
-        name="EquipmentRequestsCreateThirdScreen"
-        component={CreateThirdScreen}
-        options={{
-          title: 'Pedido (3/3)',
-          headerRight: (props) => {
-            return (
-              <HeaderRightButton
-                loading={loading}
-                disabled={disableSave}
-                onPress={async () => {
-                  setLoading(true)
-                  setDisableSave(true)
-                  await postEquipmentRequest(
-                    dateEmitted,
-                    dateEstimatedDelivery,
-                    description,
-                    equipments.filter(e => e.quantity_requested > 0)
-                  )
-                  await resetEquipmentRequestsForm()
-                  setLoading(false)
-                  setSuccess(true)
-                  navigation.dispatch(
-                    CommonActions.reset({
-                      index: 0,
-                      routes: [
-                        { name: 'EquipmentRequestsList' },
-                      ],
-                    })
-                  );
-                  setSuccess(false)
-                }}
-                iconName={success ? 'check' : 'save'}
-              />
+              <View style={{flexDirection: 'row'}}>
+                <HeaderRightButton
+                  onPress={() => {
+                    toggleQuantityFilter()
+                  }}
+                  iconName={quantityFilter ? "filter-remove" : 'filter' }
+                  iconType="material-community"
+                />
+                {
+                  secondStepCompleted
+                    ? <HeaderRightButton
+                        loading={loading}
+                        disabled={disableSave}
+                        onPress={async () => {
+                          setLoading(true)
+                          setDisableSave(true)
+                          await postEquipmentRequest(
+                            dateEmitted,
+                            dateEstimatedDelivery,
+                            description,
+                            requestedEquipments(equipments)
+                          )
+                          await resetEquipmentRequestsForm()
+                          setLoading(false)
+                          setSuccess(true)
+                          navigation.dispatch(
+                            CommonActions.reset({
+                              index: 0,
+                              routes: [
+                                { name: 'EquipmentRequestsList' },
+                              ],
+                            })
+                          );
+                          setSuccess(false)
+                        }}
+                        iconName={success ? 'check' : 'save'}
+                      />
+                    : <HeaderRightButton
+                        disabled={true}
+                        iconName="clear"
+                      />
+                }
+              </View>
             )
           }
         }}

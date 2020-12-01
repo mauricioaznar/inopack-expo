@@ -17,7 +17,7 @@ import LogoutScreen from './LogoutScreen'
 const EquipmentScreen = ({}) => {
   const EquipmentTabs = createBottomTabNavigator()
 
-  const {cart, getEquipments, getEquipmentSubcategories} = useContext(EquipmentContext)
+  const {getEquipments, getEquipmentSubcategories} = useContext(EquipmentContext)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,15 +60,6 @@ const EquipmentScreen = ({}) => {
                   size={size}
                   color={color}
                 />
-                {
-                  cart.length > 0
-                    ? <Badge
-                      status="error"
-                      value={cart.length}
-                      containerStyle={{position: 'absolute', top: -3, right: -7}}
-                    />
-                    : null
-                }
               </View>
             )
           }

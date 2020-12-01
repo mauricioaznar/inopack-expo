@@ -24,6 +24,7 @@ const HeaderRightButton = (
               : <Icon
                   name={iconName}
                   type={iconType}
+                  underlayColor={'black'}
                 />
           }
         </View>

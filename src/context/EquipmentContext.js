@@ -62,12 +62,17 @@ const equipmentReducer = (state, action) => {
     {
       return {...state, equipmentSubcategories: action.payload}
     }
+    case 'toggle_quantity_filter':
+    {
+      return {...state, quantityFilter: !state.quantityFilter}
+    }
     case 'reset':
     {
       return {
         ...state,
         description: '',
         dateEmitted: '',
+        dateEstimatedDelivery: '',
         equipments: state.equipments
           .map((equipment) => {
             return {...equipment, quantity_requested: 0}
@@ -148,6 +153,10 @@ const resetEquipmentRequestsForm = dispatch => async () => {
   dispatch({type: 'reset'})
 }
 
+const toggleQuantityFilter = dispatch => async () => {
+  dispatch({type: 'toggle_quantity_filter'})
+}
+
 export const {Provider, Context} = createDataContext(
   equipmentReducer,
   {
@@ -162,7 +171,8 @@ export const {Provider, Context} = createDataContext(
     getEquipmentSubcategories,
     updateEquipmentQuantity,
     postEquipmentRequest,
-    resetEquipmentRequestsForm
+    resetEquipmentRequestsForm,
+    toggleQuantityFilter
   },
   {
     equipments: [],
@@ -170,6 +180,7 @@ export const {Provider, Context} = createDataContext(
     cart: [],
     description: '',
     dateEmitted: '',
-    dateEstimatedDelivery: ''
+    dateEstimatedDelivery: '',
+    quantityFilter: false
   }
 )

@@ -8,6 +8,7 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {SearchBar, ListItem, Badge} from 'react-native-elements'
 import Spacer from '../../components/Spacer'
 import {Context as EquipmentContext} from '../../context/EquipmentContext'
+import requestedEquipments from '../equipmentRequests/helpers/filters'
 
 const EquipmentInventoryScreen = ({route, navigation}) => {
   const [equipmentSections, setEquipmentSections] = useState([])
@@ -15,7 +16,8 @@ const EquipmentInventoryScreen = ({route, navigation}) => {
   const [searchedText, setSearchedText] = useState('')
   const {
     equipments,
-    equipmentSubcategories
+    equipmentSubcategories,
+    quantityFilter
   } = useContext(EquipmentContext)
 
   let ignoreTop = route.params?.ignoreTop
@@ -25,16 +27,23 @@ const EquipmentInventoryScreen = ({route, navigation}) => {
 
     let eS = equipmentSubcategories
       .map(eSubcategory => {
+
+        let filteredEquipments = equipments
+          .filter(eq => eq.equipment_subcategory_id === eSubcategory.id)
+          .map(eq => {
+            return {
+              ...eq
+            }
+          })
+
+        if (hasQuantity && quantityFilter) {
+          filteredEquipments = requestedEquipments(filteredEquipments)
+        }
+
         return {
           id: eSubcategory.id,
           title: eSubcategory.name,
-          data: equipments
-            .filter(eq => eq.equipment_subcategory_id === eSubcategory.id)
-            .map(eq => {
-              return {
-                ...eq
-              }
-            })
+          data: filteredEquipments
         }
       })
       .sort((a, b) => {
@@ -43,7 +52,7 @@ const EquipmentInventoryScreen = ({route, navigation}) => {
 
     setEquipmentSections(eS)
 
-  }, [equipments, equipmentSubcategories])
+  }, [equipments, equipmentSubcategories, quantityFilter])
 
   useEffect(() => {
 

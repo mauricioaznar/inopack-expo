@@ -36,9 +36,6 @@ const EquipmentQuantityDetailScreen = ({route, navigation}) => {
             <Text h4>
               {equipment.equipment_description + ` ${equipment.equipment_id}`}
             </Text>
-            <Text>
-              {imageUrl + equipment.equipment_id + '.jpg'}
-            </Text>
           </Spacer>
 
          {
@@ -58,16 +55,10 @@ const EquipmentQuantityDetailScreen = ({route, navigation}) => {
           <View style={{flex: 1, justifyContent: 'flex-end'}}>
             <Spacer>
               <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                <Button
-                  title=""
-                  icon={() => {
-                    return <Icon
-                      name='remove'
-                      type='material'
-                      color="white"
-                      size={40}
-                    />
-                  }}
+                <Icon
+                  name='remove'
+                  type='material'
+                  raised
                   onPress={decrease}
                 />
                 <Text
@@ -76,16 +67,10 @@ const EquipmentQuantityDetailScreen = ({route, navigation}) => {
                 >
                   {quantity}
                 </Text>
-                <Button
-                  title=""
-                  icon={() => {
-                    return <Icon
-                      name='add'
-                      type='material'
-                      color="white"
-                      size={40}
-                    />
-                  }}
+                <Icon
+                  name='add'
+                  type='material'
+                  raised
                   onPress={increase}
                 />
               </View>
