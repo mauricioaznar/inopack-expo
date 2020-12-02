@@ -1,4 +1,4 @@
 const serverUrl = __DEV__ ?
-  'https://f0bb93631eae.ngrok.io/' : 'https://inoserver.grupoinopack.com/'
+  'https://0817667fb2b8.ngrok.io/' : 'https://inoserver.grupoinopack.com/'
 
 export default serverUrl

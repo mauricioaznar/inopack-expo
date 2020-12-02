@@ -11,7 +11,7 @@ export default (reducer, actions, defaultValue) => {
 
     for (let key in actions) {
       if (actions.hasOwnProperty(key)) {
-        boundActions[key] = actions[key](dispatch)
+        boundActions[key] = actions[key](dispatch, state)
       }
     }
 

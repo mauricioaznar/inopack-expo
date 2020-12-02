@@ -8,9 +8,9 @@ import {SafeAreaView} from 'react-native-safe-area-context'
 import {SearchBar, ListItem, Badge} from 'react-native-elements'
 import Spacer from '../../components/Spacer'
 import {Context as EquipmentContext} from '../../context/EquipmentContext'
-import requestedEquipments from '../equipmentRequests/helpers/filters'
+import {filterEquipmentsByQuantity} from './helpers/filters'
 
-const EquipmentInventoryScreen = ({route, navigation}) => {
+const EquipmentListScreen = ({route, navigation}) => {
   const [equipmentSections, setEquipmentSections] = useState([])
   const [filteredSections, setFilteredSections] = useState([])
   const [searchedText, setSearchedText] = useState('')
@@ -37,7 +37,7 @@ const EquipmentInventoryScreen = ({route, navigation}) => {
           })
 
         if (hasQuantity && quantityFilter) {
-          filteredEquipments = requestedEquipments(filteredEquipments)
+          filteredEquipments = filterEquipmentsByQuantity(filteredEquipments)
         }
 
         return {
@@ -128,7 +128,8 @@ const EquipmentInventoryScreen = ({route, navigation}) => {
                 <ListItem.Title>{item.equipment_description}</ListItem.Title>
               </ListItem.Content>
               {
-                hasQuantity && item.quantity_requested > 0 ? <Text>{item.quantity_requested}</Text> : null
+                hasQuantity && item.quantity_requested > 0
+                  ? <Text>{item.quantity_requested}</Text> : null
               }
               {
                 hasQuantity ? <ListItem.Chevron /> : null
@@ -151,4 +152,4 @@ const EquipmentInventoryScreen = ({route, navigation}) => {
 
 const styles = StyleSheet.create({})
 
-export default EquipmentInventoryScreen
+export default EquipmentListScreen

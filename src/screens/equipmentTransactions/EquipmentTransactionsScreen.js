@@ -2,29 +2,28 @@ import React, {useContext, useState} from 'react'
 import {View, StyleSheet, FlatList, TouchableOpacity} from 'react-native'
 import {createStackNavigator} from '@react-navigation/stack';
 import { CommonActions } from '@react-navigation/native';
-import { Icon} from 'react-native-elements'
-import EquipmentRequestsListScreen from './ListScreen'
-import {Context as EquipmentContext, Provider as EquipmentProvider} from '../../context/EquipmentContext'
+import EquipmentTransactionListScreen from './EquipmentTransactionsListScreen'
 import CreateFirstScreen from './CreateFirstScreen'
-import EquipmentInventoryScreen
-  from '../equipmentInventory/EquipmentInventoryScreen'
+import {Context as EquipmentContext} from '../../context/EquipmentContext'
+import EquipmentListScreen
+  from './EquipmentListScreen'
 import EquipmentQuantityDetailScreen from './EquipmentQuantityDetailScreen'
 import HeaderRightButton from '../../components/HeaderRightButton'
 import moment from 'moment'
 import dateFormat from '../../helpers/dateFormat'
-import requestedEquipments from './helpers/filters'
+import {filterEquipmentsByQuantity} from './helpers/filters'
 
 
 const EquipmentRequestsStack = createStackNavigator()
 
-const EquipmentRequestsScreen = ({navigation}) => {
+const EquipmentTransactionsScreen = ({navigation}) => {
   const {
     description,
     dateEmitted,
     dateEstimatedDelivery,
     equipments,
-    postEquipmentRequest,
-    resetEquipmentRequestsForm,
+    postEquipmentTransaction,
+    resetEquipmentTransactionForm,
     toggleQuantityFilter,
     quantityFilter
   } = useContext(EquipmentContext)
@@ -37,20 +36,21 @@ const EquipmentRequestsScreen = ({navigation}) => {
     && moment(dateEstimatedDelivery, dateFormat)
     && description.length > 10
 
-  const secondStepCompleted = requestedEquipments(equipments).length > 0
+  const secondStepCompleted = filterEquipmentsByQuantity(equipments).length > 0
 
   return (
     <EquipmentRequestsStack.Navigator>
       <EquipmentRequestsStack.Screen
-        name="EquipmentRequestsList"
-        component={EquipmentRequestsListScreen}
+        name="EquipmentTransactionList"
+        component={EquipmentTransactionListScreen}
         options={{
           title: "Pedidos",
           headerRight: (props) => {
             return (
               <HeaderRightButton
                 onPress={() => {
-                  navigation.navigate('EquipmentRequestsCreateFirstScreen')
+                  resetEquipmentTransactionForm()
+                  navigation.navigate('EquipmentTransactionFormFirstScreen')
                 }}
                 iconName="add"
               />
@@ -59,7 +59,7 @@ const EquipmentRequestsScreen = ({navigation}) => {
         }}
       />
       <EquipmentRequestsStack.Screen
-        name="EquipmentRequestsCreateFirstScreen"
+        name="EquipmentTransactionFormFirstScreen"
         component={CreateFirstScreen}
         options={{
           title: 'Nuevo pedido (1/2)',
@@ -68,7 +68,7 @@ const EquipmentRequestsScreen = ({navigation}) => {
               firstStepCompleted
               ? <HeaderRightButton
                   onPress={() => {
-                    navigation.navigate('EquipmentRequestsCreateSecondScreen')
+                    navigation.navigate('EquipmentTransactionFormSecondScreen')
                   }}
                   iconName="arrow-forward"
                 />
@@ -81,8 +81,8 @@ const EquipmentRequestsScreen = ({navigation}) => {
         }}
       />
       <EquipmentRequestsStack.Screen
-        name="EquipmentRequestsCreateSecondScreen"
-        component={EquipmentInventoryScreen}
+        name="EquipmentTransactionFormSecondScreen"
+        component={EquipmentListScreen}
         initialParams={{
           hasQuantity: true,
           ignoreTop: true
@@ -101,37 +101,33 @@ const EquipmentRequestsScreen = ({navigation}) => {
                 />
                 {
                   secondStepCompleted
-                    ? <HeaderRightButton
-                        loading={loading}
-                        disabled={disableSave}
-                        onPress={async () => {
-                          setLoading(true)
-                          setDisableSave(true)
-                          await postEquipmentRequest(
-                            dateEmitted,
-                            dateEstimatedDelivery,
-                            description,
-                            requestedEquipments(equipments)
-                          )
-                          await resetEquipmentRequestsForm()
-                          setLoading(false)
-                          setSuccess(true)
-                          navigation.dispatch(
-                            CommonActions.reset({
-                              index: 0,
-                              routes: [
-                                { name: 'EquipmentRequestsList' },
-                              ],
-                            })
-                          );
-                          setSuccess(false)
-                        }}
-                        iconName={success ? 'check' : 'save'}
-                      />
-                    : <HeaderRightButton
-                        disabled={true}
-                        iconName="clear"
-                      />
+                  ? <HeaderRightButton
+                      loading={loading}
+                      disabled={disableSave}
+                      onPress={async () => {
+                        setLoading(true)
+                        setDisableSave(true)
+                        await postEquipmentTransaction()
+                        await resetEquipmentTransactionForm()
+                        setLoading(false)
+                        setSuccess(true)
+                        navigation.dispatch(
+                          CommonActions.reset({
+                            index: 0,
+                            routes: [
+                              { name: 'EquipmentTransactionList' },
+                            ],
+                          })
+                        );
+                        setSuccess(false)
+                        setDisableSave(false)
+                      }}
+                      iconName={success ? 'check' : 'save'}
+                    />
+                  : <HeaderRightButton
+                      disabled={true}
+                      iconName="clear"
+                    />
                 }
               </View>
             )
@@ -151,6 +147,6 @@ const EquipmentRequestsScreen = ({navigation}) => {
 
 const styles = StyleSheet.create({})
 
-export default EquipmentRequestsScreen
+export default EquipmentTransactionsScreen
 
 

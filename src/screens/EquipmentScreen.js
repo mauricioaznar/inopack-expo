@@ -1,12 +1,10 @@
 import React, {useContext, useEffect} from 'react'
 import {View} from 'react-native'
-import EquipmentInventoryScreen
-  from './equipmentInventory/EquipmentInventoryScreen'
+import EquipmentListScreen
+  from './equipmentTransactions/EquipmentListScreen'
 import {Badge, Icon} from 'react-native-elements'
-import EquipmentRequestsScreen
-  from './equipmentRequests/EquipmentRequestsScreen'
-import EquipmentWithdrawalScreen
-  from './equipmentWithdrawal/EquipmentWithdrawalScreen'
+import EquipmentTransactionsScreen
+  from './equipmentTransactions/EquipmentTransactionsScreen'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {
   Provider as EquipmentProvider,
@@ -29,11 +27,11 @@ const EquipmentScreen = ({}) => {
 
   return (
     <EquipmentTabs.Navigator
-      initialRouteName="EquipmentRequests"
+      initialRouteName="EquipmentTransactions"
     >
       <EquipmentTabs.Screen
-        name="EquipmentInventory"
-        component={EquipmentInventoryScreen}
+        name="EquipmentList"
+        component={EquipmentListScreen}
         options={{
           title: "Inventario",
           tabBarIcon: ({color, size}) => {
@@ -47,8 +45,8 @@ const EquipmentScreen = ({}) => {
         }}
       />
       <EquipmentTabs.Screen
-        name="EquipmentRequests"
-        component={EquipmentRequestsScreen}
+        name="EquipmentTransactions"
+        component={EquipmentTransactionsScreen}
         options={{
           title: "Pedidos",
           tabBarIcon: ({color, size}) => {

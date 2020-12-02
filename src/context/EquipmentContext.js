@@ -1,44 +1,19 @@
 import React from 'react'
 import createDataContext from './createDataContext'
 import inopack from '../api/inopack'
+import {filterEquipmentsByQuantity}
+  from '../screens/equipmentTransactions/helpers/filters'
+import dateFormat from '../helpers/dateFormat'
+import moment from 'moment'
 
 const equipmentReducer = (state, action) => {
   switch(action.type) {
-    case 'add_to_cart':
-      return {...state, cart: [...state.cart, action.payload]}
-    case 'remove_from_cart':
-      return {...state, cart: state.cart.filter(e => {
-          return e.equipment_id !== action.payload.equipment_id
-        })
-      }
     case 'set_description':
       return {...state, description: action.payload}
     case 'set_date_emitted':
       return {...state, dateEmitted: action.payload}
     case 'set_date_estimated_delivery':
       return {...state, dateEstimatedDelivery: action.payload}
-    case 'add_quantity':
-      {
-        const newCart = state.cart.slice()
-        const index = newCart.findIndex(eq => {
-          return eq.equipment_id === action.payload.equipment_id
-        })
-        const newEquipment = {...newCart[index]}
-        newEquipment.quantity += 1
-        newCart[index] = newEquipment
-        return {...state, cart: newCart}
-      }
-    case 'remove_quantity':
-      {
-        const newCart = state.cart.slice()
-        const index = newCart.findIndex(eq => {
-          return eq.equipment_id === action.payload.equipment_id
-        })
-        const newEquipment = {...newCart[index]}
-        newEquipment.quantity -= 1
-        newCart[index] = newEquipment
-        return {...state, cart: newCart}
-      }
     case 'update_equipment_quantity':
       {
         const newEquipments = state.equipments.slice()
@@ -62,6 +37,13 @@ const equipmentReducer = (state, action) => {
     {
       return {...state, equipmentSubcategories: action.payload}
     }
+    case 'set_equipment_transaction':
+    {
+      return {
+        ...state,
+        equipmentTransaction: action.payload,
+      }
+    }
     case 'toggle_quantity_filter':
     {
       return {...state, quantityFilter: !state.quantityFilter}
@@ -71,25 +53,19 @@ const equipmentReducer = (state, action) => {
       return {
         ...state,
         description: '',
-        dateEmitted: '',
+        dateEmitted: moment().format(dateFormat),
         dateEstimatedDelivery: '',
         equipments: state.equipments
           .map((equipment) => {
             return {...equipment, quantity_requested: 0}
-          })
+          }),
+        equipment_transaction: {},
+        quantityFilter: false
       }
     }
     default:
       return state
   }
-}
-
-const addToCart = dispatch => (equipment) => {
-  dispatch({type: 'add_to_cart', payload: equipment})
-}
-
-const removeFromCart = dispatch => (equipment) => {
-  dispatch({type: 'remove_from_cart', payload: equipment})
 }
 
 const setDescription = dispatch => (description) => {
@@ -102,14 +78,6 @@ const setDateEmitted = dispatch => (dateEmitted) => {
 
 const setDateEstimatedDelivery = dispatch => (dateEstimatedDelivery) => {
   dispatch({type: 'set_date_estimated_delivery', payload: dateEstimatedDelivery})
-}
-
-const addQuantity = dispatch => (equipment) => {
-  dispatch({type: 'add_quantity', payload: equipment})
-}
-
-const removeQuantity = dispatch => (equipment) => {
-  dispatch({type: 'remove_quantity', payload: equipment})
 }
 
 const getEquipments = dispatch => async () => {
@@ -128,28 +96,64 @@ const updateEquipmentQuantity = dispatch => (equipment, quantity) => {
   dispatch({type: 'update_equipment_quantity', payload: {equipment, quantity}})
 }
 
-const postEquipmentRequest = dispatch => async (dateEmitted, dateEstimatedDelivery, description, equipments) => {
-  const newEquipmentRequest = {
+const setEquipmentTransaction = dispatch => (equipmentTransaction) => {
+  dispatch({type: 'set_equipment_transaction', payload: equipmentTransaction})
+}
+
+const postEquipmentTransaction = (dispatch, state) => async () => {
+  const {
+    dateEmitted,
+    dateEstimatedDelivery,
+    description,
+    equipments,
+    equipmentTransaction
+  } = state
+  const filteredEquipmentsByQuantity = filterEquipmentsByQuantity(equipments)
+  const newEquipmentTransaction = {
     date_emitted: dateEmitted,
     date_estimated_delivery: dateEstimatedDelivery,
     description: description,
     equipment_transaction_type_id: 1,
     equipment_transaction_status_id: 1
   }
-  const response = await inopack.post('equipmentTransaction', newEquipmentRequest)
+  let response
+  if (equipmentTransaction.id) {
+    response = await inopack.put('equipmentTransaction/' + equipmentTransaction.id, newEquipmentTransaction)
+  } else {
+    response = await inopack.post('equipmentTransaction', newEquipmentTransaction)
+  }
   const promises = []
-  equipments.forEach((equipment) => {
-    const newEquipmentItem = {
-      equipment_transaction_id: response.data.data.id,
-      equipment_id: equipment.equipment_id,
-      quantity: equipment.quantity_requested
+  let deletedEquipmentTransactionItems = [...equipmentTransaction.equipment_transaction_items]
+  filteredEquipmentsByQuantity.forEach((equipment) => {
+    let foundEquipmentItem = deletedEquipmentTransactionItems.find(eItem => {
+      return eItem.equipment_id === equipment.equipment_id
+    })
+    if (foundEquipmentItem) {
+      const updatedEquipmentItem = {
+        ...foundEquipmentItem,
+        quantity: equipment.quantity_requested
+      }
+      promises.push(inopack.put('equipmentTransactionItem/' + updatedEquipmentItem.id, updatedEquipmentItem))
+    } else {
+      const newEquipmentItem = {
+        equipment_transaction_id: response.data.data.id,
+        equipment_id: equipment.equipment_id,
+        quantity: equipment.quantity_requested
+      }
+      promises.push(inopack.post('equipmentTransactionItem', newEquipmentItem))
     }
-    promises.push(inopack.post('equipmentTransactionItem', newEquipmentItem))
+    deletedEquipmentTransactionItems = deletedEquipmentTransactionItems
+      .filter(eItem => {
+        return eItem.equipment_id !== equipment.equipment_id
+      })
+  })
+  deletedEquipmentTransactionItems.forEach(eItem => {
+    promises.push(inopack.put('equipmentTransactionItem/' + eItem.id, {active: -1}))
   })
   const responses = await Promise.all(promises)
 }
 
-const resetEquipmentRequestsForm = dispatch => async () => {
+const resetEquipmentTransactionForm = dispatch => async () => {
   dispatch({type: 'reset'})
 }
 
@@ -160,27 +164,24 @@ const toggleQuantityFilter = dispatch => async () => {
 export const {Provider, Context} = createDataContext(
   equipmentReducer,
   {
-    addToCart,
-    removeFromCart,
     setDescription,
     setDateEmitted,
     setDateEstimatedDelivery,
-    addQuantity,
-    removeQuantity,
     getEquipments,
     getEquipmentSubcategories,
     updateEquipmentQuantity,
-    postEquipmentRequest,
-    resetEquipmentRequestsForm,
-    toggleQuantityFilter
+    postEquipmentTransaction,
+    resetEquipmentTransactionForm,
+    toggleQuantityFilter,
+    setEquipmentTransaction
   },
   {
     equipments: [],
     equipmentSubcategories: [],
-    cart: [],
     description: '',
-    dateEmitted: '',
+    dateEmitted: moment().format(dateFormat),
     dateEstimatedDelivery: '',
-    quantityFilter: false
+    quantityFilter: false,
+    equipmentTransaction: {}
   }
 )
